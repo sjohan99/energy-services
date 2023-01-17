@@ -1,4 +1,5 @@
 from utils import *
+import asyncio
 
 
 class WebTextScraper:
@@ -14,9 +15,8 @@ class WebTextScraper:
         self.ignored_urls = set()
         self.unique_strings = set()
 
-    def start(self):
-        self.scrape(self.base_url)
-        self.save()
+    async def start(self):
+        await self.scrape(self.base_url)
 
     def save(self):
         create_dir('complete')
@@ -24,7 +24,7 @@ class WebTextScraper:
         write_file(f'complete/{self.save_nr}{self.organization_name}', self.url_text_content_dict_complete, self.base_url)
         write_file(f'unique_only/{self.save_nr}{self.organization_name}', self.url_text_content_dict_unique, self.base_url)
 
-    def scrape(self, url, recurse=True):
+    async def scrape(self, url, recurse=True):
         """
         Recursively scrapes the text-data from any URL found in the resulting HTML-document for the input-parameter url
         Uses global variable to keep track of explored URLs as to not recurse infinitely.
@@ -33,9 +33,9 @@ class WebTextScraper:
         :param recurse: Should recurse to other urls in the same domain
         :return: Nothing, instead saves found data in instance attribute variables as a key-value pair of URL -> Content
         """
-        sleep(self.sleep_interval_seconds)  # Sleep as to not get rate-limited by host
+        await asyncio.sleep(self.sleep_interval_seconds)  # Sleep as to not get rate-limited by host
         self.add_url_as_explored(url)
-        print(f'INFO: size of explored = {len(self.explored_urls) / 2}')
+        print(f'INFO: size of explored for number {self.save_nr}: {len(self.explored_urls) / 2}')
         soup = try_to_get_soup_parser(url)
         if soup is None:
             return
@@ -46,7 +46,7 @@ class WebTextScraper:
             return
         for link in links:
             if link not in self.explored_urls:
-                self.scrape(link)
+                await self.scrape(link)
 
     @staticmethod
     def join_strings(strings):
