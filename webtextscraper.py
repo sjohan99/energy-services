@@ -1,19 +1,21 @@
 from utils import *
 import asyncio
+from time import time
 
 
 class WebTextScraper:
 
-    def __init__(self, base_url, save_nr, organization_name, sleep_interval_seconds=2):
+    def __init__(self, base_url, save_nr, organization_name, min_seconds_between_requests=2):
         self.base_url = base_url
         self.save_nr = save_nr
         self.organization_name = organization_name
-        self.sleep_interval_seconds = sleep_interval_seconds
+        self.min_seconds_between_requests = min_seconds_between_requests
         self.url_text_content_dict_complete = dict()
         self.url_text_content_dict_unique = dict()
         self.explored_urls = set()
         self.ignored_urls = set()
         self.unique_strings = set()
+        self.previous_request_time = time()
 
     async def start(self):
         await self.scrape(self.base_url)
@@ -24,29 +26,36 @@ class WebTextScraper:
         write_file(f'complete/{self.save_nr}{self.organization_name}', self.url_text_content_dict_complete, self.base_url)
         write_file(f'unique_only/{self.save_nr}{self.organization_name}', self.url_text_content_dict_unique, self.base_url)
 
-    async def scrape(self, url, recurse=True):
+    async def scrape(self, url):
         """
         Recursively scrapes the text-data from any URL found in the resulting HTML-document for the input-parameter url
         Uses global variable to keep track of explored URLs as to not recurse infinitely.
         Works slowly (default 2 second interval between requests) as to hopefully not get rate-limited
         :param url: URL-address of the site you want to scrape
-        :param recurse: Should recurse to other urls in the same domain
         :return: Nothing, instead saves found data in instance attribute variables as a key-value pair of URL -> Content
         """
-        await asyncio.sleep(self.sleep_interval_seconds)  # Sleep as to not get rate-limited by host
+        await self.wait_to_avoid_rate_limiting()
         self.add_url_as_explored(url)
-        print(f'INFO: size of explored for number {self.save_nr}: {len(self.explored_urls) / 2}')
+        print(f'INFO: fetched urls for {self.organization_name}: {len(self.explored_urls) // 2}')
         soup = try_to_get_soup_parser(url)
         if soup is None:
             return
         text = get_all_text_from_soup(soup)
         self.add_strings_to_save_dicts(url, text)
         links = self.get_all_href_links(soup, self.base_url)
-        if not recurse:
-            return
         for link in links:
             if link not in self.explored_urls:
                 await self.scrape(link)
+
+    async def wait_to_avoid_rate_limiting(self):
+        wait_time = self.get_wait_time_seconds(time())
+        await asyncio.sleep(wait_time)  # Sleep as to not get rate-limited by host
+        self.previous_request_time = time()
+
+    def get_wait_time_seconds(self, now):
+        time_passed = now - self.previous_request_time
+        time_remaining = self.min_seconds_between_requests - time_passed
+        return max(0, time_remaining)
 
     @staticmethod
     def join_strings(strings):
