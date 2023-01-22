@@ -1,3 +1,7 @@
+import ssl
+
+import aiohttp
+
 from utils import *
 import asyncio
 from time import time
@@ -5,7 +9,7 @@ from time import time
 
 class WebTextScraper:
 
-    def __init__(self, base_url, save_nr, organization_name, min_seconds_between_requests=2):
+    def __init__(self, base_url, save_nr, organization_name, aio_session=None, min_seconds_between_requests=2):
         self.base_url = base_url
         self.save_nr = save_nr
         self.organization_name = organization_name
@@ -16,9 +20,31 @@ class WebTextScraper:
         self.ignored_urls = set()
         self.unique_strings = set()
         self.previous_request_time = time()
+        self.aio_session = aio_session
+        self.failed = False
 
     async def start(self):
-        await self.scrape(self.base_url)
+        try:
+            await self.scrape(self.base_url)
+        except ssl.SSLCertVerificationError as e:
+            print(e)
+            self.failed = True
+            with open('errors.txt', 'a', encoding='utf-8') as f:
+                f.write(str(e) + '\n')
+        except Exception as e:
+            print(f'ERROR: {e}')
+            self.failed = True
+            with open('errors.txt', 'a', encoding='utf-8') as f:
+                f.write(f'site was: {self.base_url}. error: {e}\n')
+
+        self.save_if_success()
+
+    def save_if_success(self):
+        if self.failed:
+            with open('failed_sites.txt', 'a', encoding='utf-8') as f:
+                f.write(f'site failed: {self.base_url}\n')
+        else:
+            self.save()
 
     def save(self):
         create_dir('complete')
@@ -37,7 +63,7 @@ class WebTextScraper:
         await self.wait_to_avoid_rate_limiting()
         self.add_url_as_explored(url)
         print(f'INFO: fetched urls for {self.organization_name}: {len(self.explored_urls) // 2}')
-        soup = try_to_get_soup_parser(url)
+        soup = await try_to_get_soup_parser_async(url, self.aio_session)
         if soup is None:
             return
         text = get_all_text_from_soup(soup)
@@ -85,11 +111,11 @@ class WebTextScraper:
         :param url: URL to clean
         :return: cleaned URL.
         """
+        # TODO ignore url if 'wp-json' is contained
         url = clean_query(url)
         if url in self.ignored_urls:
             return self.base_url
         if is_file_link(url, self.base_url):
-            print(f'Download link found, adding to ignores. URL was: {url}')
             self.ignored_urls.add(url)
             return self.base_url
         return url
@@ -110,12 +136,11 @@ class WebTextScraper:
             raw_link = data['href']
             link = None
             if raw_link.startswith('/'):
-                link = f'{base_url}{data["href"]}'
+                link = f'{base_url}{raw_link}'
             elif raw_link.startswith(base_url):
-                link = data['href']
+                link = raw_link
             if link:
                 link = self.clean_url(link)
                 links.add(link)
 
         return links
-

@@ -1,8 +1,7 @@
-import sys
 import urllib.error
-from urllib import request
+
+import aiohttp
 from bs4 import BeautifulSoup
-from time import sleep
 from datetime import datetime
 import regex
 import os
@@ -29,20 +28,9 @@ def download_pdf(url):
         f.write(response.content)
 
 
-def download_html(url):
-    """
-    Downloads and reads the HTML-document into a python string at the given url
-    :param url: URL for the HTML-document to download
-    :return: HTML-document as string
-    """
-    req = request.Request(
-        url,
-        headers={
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.1 Safari/603.1.30'}
-    )
-    response = request.urlopen(req)
-    web_content = response.read()
-    return web_content
+async def download_html_async(url, aio_session):
+    async with aio_session.get(url) as resp:
+        return await resp.text()
 
 
 def clean_query(url):
@@ -57,21 +45,25 @@ def clean_query(url):
     return url
 
 
-def try_to_get_soup_parser(url):
+async def try_to_get_soup_parser_async(url, aio_session):
     """
     Tries to download content from URL and create soup-object. If the content is unable to be decoded or something went
     wrong with the HTTP request then the errors are handled and None is returned
     :param url: URL to get soup-object for
+    :param aio_session: a aiohttp ClientSession to perform requests with
     :return: soup-object if successful, None if not.
     """
     try:
-        soup = get_soup_parser_for_html(url)
+        soup = await get_soup_parser_for_html_async(url, aio_session)
         return soup
     except UnicodeDecodeError as e:
         handle_decode_error(e, url)
         return None
     except urllib.error.HTTPError as e:
         handle_http_error(e, url)
+        return None
+    except aiohttp.ClientResponseError as e:
+        print(f'url: {url}. error: {e}')
         return None
 
 
@@ -85,13 +77,8 @@ def handle_decode_error(e, url):
     print(e)
 
 
-def get_soup_parser_for_html(url):
-    """
-    Downloads HTML-document and returns a BeautifulSoup object with an html parser
-    :param url: URL to download from
-    :return: BeautifulSoup object configured as html parser
-    """
-    content = download_html(url)
+async def get_soup_parser_for_html_async(url, aio_session):
+    content = await download_html_async(url, aio_session)
     return BeautifulSoup(content, features="html.parser")
 
 
