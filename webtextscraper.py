@@ -118,10 +118,18 @@ class WebTextScraper:
         url = clean_query(url)
         if url in self.ignored_urls:
             return self.base_url
-        if is_file_link(url, self.base_url) or 'wp-json' in url:
+        if is_file_link(url, self.base_url) or 'wp-json' in url or self.should_be_ignored(url):
             self.ignored_urls.add(url)
             return self.base_url
         return url
+
+    def should_be_ignored(self, url):
+        url = url.lower()
+        if url.endswith('css') or url.endswith('css/'):
+            return True
+        if url.endswith('feed') or url.endswith('feed/'):
+            return True
+        return False
 
     def get_all_href_links(self, soup, base_url):
         """
