@@ -1,0 +1,18 @@
+site was: https://www.goteborgenergi.se. error: Cannot connect to host www.goteborgenergi.se:4443 ssl:default [Connect call failed ('194.14.67.49', 4443)]
+site was: https://www.eon.se. error: [WinError 10054] An existing connection was forcibly closed by the remote host
+site was: https://www.vattenfall.se. error: [WinError 10054] An existing connection was forcibly closed by the remote host
+site was: https://oresundskraft.se. error: [WinError 10053] An established connection was aborted by the software in your host machine
+site was: https://ustekveikja.no. error: [WinError 10053] An established connection was aborted by the software in your host machine
+site was: https://www.upplandsenergi.se. error: Cannot connect to host www.upplandsenergi.se25252.vindkraft.html:443 ssl:default [getaddrinfo failed]
+site was: https://www.upplandsenergi.se. error: Cannot connect to host www.upplandsenergi.se25252.vindkraft.html:443 ssl:default [getaddrinfo failed]
+site was: https://hssolteknik.se. error: Cannot connect to host hssolteknik.se:443 ssl:default [getaddrinfo failed]
+Cannot connect to host mvel.se:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1123)')]
+site was: https://energiochdesign.se. error: maximum recursion depth exceeded in comparison
+
+##########################
+
+Cannot connect to host mvel.se:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1123)')]
+site was: https://www.goteborgenergi.se. error: Cannot connect to host www.goteborgenergi.se:4443 ssl:default [Connect call failed ('194.14.67.49', 4443)]
+site was: https://www.upplandsenergi.se. error: Cannot connect to host www.upplandsenergi.se25252.vindkraft.html:443 ssl:default [getaddrinfo failed]
+site was: https://www.upplandsenergi.se. error: Cannot connect to host www.upplandsenergi.se25252.vindkraft.html:443 ssl:default [getaddrinfo failed]
+site was: https://energiochdesign.se. error: maximum recursion depth exceeded in comparison

@@ -1,0 +1,47 @@
+Cannot connect to host mvel.se:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1123)')]
+Cannot connect to host mvel.se:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1123)')]
+site was: https://skurupselverk.se/. error: Server disconnected
+site was: https://vbgelkraft.se/. error: Server disconnected
+site was: http://www.avenaenergi.se/. error: Server disconnected
+site was: https://batteriovarmeteknik.se/. error: Server disconnected
+site was: https://svenskkraft.se/. error: Server disconnected
+site was: https://www.eon.se/. error: Server disconnected
+site was: https://ninorden.se/. error: Server disconnected
+site was: https://www.alingsasenergi.se/. error: Server disconnected
+site was: https://www.brinova.se/. error: Server disconnected
+site was: https://payncharge.se/. error: Server disconnected
+site was: https://nybroenergi.se/. error: Server disconnected
+site was: https://eksjoenergi.se/. error: Server disconnected
+site was: https://statkraftvind.se/. error: Server disconnected
+site was: https://www.falkenberg-energi.se/. error: Server disconnected
+site was: https://kvanumenergi.se/. error: Server disconnected
+site was: https://www.kraftviken.se/. error: Server disconnected
+site was: https://www.toreenergi.se/. error: Server disconnected
+site was: https://energiochdesign.se/. error: Server disconnected
+site was: https://alvestaenergi.se/. error: [WinError 10053] An established connection was aborted by the software in your host machine
+site was: https://hallstavikselverk.se/. error: Server disconnected
+site was: https://borgholmenergi.se/. error: Server disconnected
+site was: https://sjogerstadsenergi.se/. error: Server disconnected
+site was: https://www.enklaelbolaget.se/. error: Server disconnected
+site was: https://www.dalakraft.se/. error: Server disconnected
+site was: https://www.norrtaljeenergi.se/. error: Server disconnected
+site was: https://brittedal.se/. error: Server disconnected
+site was: https://www.naturalpower.com/uk (ej svensk hemsida). error: Server disconnected
+site was: https://boraselhandel.se/. error: Server disconnected
+site was: https://www.billingeenergi.se/. error: Server disconnected
+site was: https://newclearenergy.se/. error: Server disconnected
+site was: https://www.eqfastigheter.se/. error: Server disconnected
+site was: https://vallebygdens.se/. error: Server disconnected
+site was: https://www.oskarshamnenergi.se/. error: Server disconnected
+site was: https://www.piteenergi.se/. error: Server disconnected
+site was: https://ustekveikja.no/. error: Server disconnected
+site was: https://www.ovikenergi.se/. error: Server disconnected
+site was: https://www.gotaenergi.se/. error: 0, message='', url=URL('https://www.gotaenergi.se//artiklar/spotpris-vad-det-betyder-och-sa-funkar-det')
+site was: https://www.nordicgreen.se/. error: Server disconnected
+site was: https://sigillet-fastighet.se/. error: Server disconnected
+site was: https://www.entelios.se/. error: Server disconnected
+site was: https://www.osterlenskraft.se/. error: Server disconnected
+site was: https://www.hemab.se/. error: Server disconnected
+site was: https://tibber.com/se/smart-elavtal. error: Server disconnected
+site was: https://www.eem.se/privat/. error: Server disconnected
+site was: https://etcel.se/. error: Server disconnected

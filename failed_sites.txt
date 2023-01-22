@@ -1,0 +1,20 @@
+site failed: https://www.goteborgenergi.se
+site failed: https://www.eon.se
+site failed: https://oresundskraft.se
+site failed: https://ustekveikja.no
+site failed: https://www.upplandsenergi.se
+site failed: https://www.upplandsenergi.se
+site failed: https://hssolteknik.se
+site failed: https://mvel.se/mvel
+site failed: https://energiochdesign.se
+
+Skurups Energihandel AB pga konstig
+Energi & Design i Sverige AB pga max recursion depth
+
+##################################################
+
+site failed: https://mvel.se/mvel
+site failed: https://www.goteborgenergi.se
+site failed: https://www.upplandsenergi.se
+site failed: https://www.upplandsenergi.se
+site failed: https://energiochdesign.se
