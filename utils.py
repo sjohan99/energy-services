@@ -89,7 +89,7 @@ def is_file_link(url, base_url):
     :param base_url: URL of the base domain
     :return: True if url ends with a file extension (other than .html), otherwise false
     """
-    if url.endswith('.html'):
+    if url.endswith('.html') or url.lower().endswith('.htm') or url.lower().endswith('css'):
         return False
     pattern = base_url + r'.*\..*$'
     match = regex.search(pattern, url)

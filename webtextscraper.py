@@ -9,7 +9,7 @@ from time import time
 
 class WebTextScraper:
 
-    def __init__(self, base_url, save_nr, organization_name, aio_session=None, min_seconds_between_requests=2):
+    def __init__(self, base_url, save_nr, organization_name, aio_session=None, min_seconds_between_requests=2.6):
         self.base_url = base_url
         self.save_nr = save_nr
         self.organization_name = organization_name
@@ -22,6 +22,9 @@ class WebTextScraper:
         self.previous_request_time = time()
         self.aio_session = aio_session
         self.failed = False
+
+    def __repr__(self):
+        return f'{self.save_nr}{self.organization_name}'
 
     async def start(self):
         try:
@@ -49,8 +52,8 @@ class WebTextScraper:
     def save(self):
         create_dir('complete')
         create_dir('unique_only')
-        write_file(f'complete/{self.save_nr}{self.organization_name}', self.url_text_content_dict_complete, self.base_url)
-        write_file(f'unique_only/{self.save_nr}{self.organization_name}', self.url_text_content_dict_unique, self.base_url)
+        write_file(f'complete/{self.save_nr} {self.organization_name}.txt', self.url_text_content_dict_complete, self.base_url)
+        write_file(f'unique_only/{self.save_nr} {self.organization_name}.txt', self.url_text_content_dict_unique, self.base_url)
 
     async def scrape(self, url):
         """
@@ -62,7 +65,7 @@ class WebTextScraper:
         """
         await self.wait_to_avoid_rate_limiting()
         self.add_url_as_explored(url)
-        print(f'INFO: fetched urls for {self.organization_name}: {len(self.explored_urls) // 2}')
+        print(f'INFO: fetched urls for {self.organization_name}: {len(self.explored_urls) // 2}. Current url: {url}')
         soup = await try_to_get_soup_parser_async(url, self.aio_session)
         if soup is None:
             return
@@ -115,7 +118,7 @@ class WebTextScraper:
         url = clean_query(url)
         if url in self.ignored_urls:
             return self.base_url
-        if is_file_link(url, self.base_url):
+        if is_file_link(url, self.base_url) or 'wp-json' in url:
             self.ignored_urls.add(url)
             return self.base_url
         return url

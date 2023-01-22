@@ -11,7 +11,10 @@ def create_scraper_objects():
         org_number, name, url = websiteInfo
         if url.endswith('/'):
             url = url[:-1]
-        scrapers.append(WebTextScraper(url, org_number, name))
+        if 'skurup' in name.lower() or 'energi & design' in name.lower():
+            pass
+        else:
+            scrapers.append(WebTextScraper(url, org_number, name))
     return scrapers
 
 
