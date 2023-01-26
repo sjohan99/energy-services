@@ -84,6 +84,7 @@ class WebTextScraper:
     async def scrape_iterative(self, url):
         self.links_set.add(url)
         while self.links_set:
+            self.links_set.remove(url)
             for new_url in self.links_set:
                 url = new_url
                 break
@@ -100,7 +101,7 @@ class WebTextScraper:
             for link in links:
                 if link not in self.explored_urls:
                     self.links_set.add(link)
-            self.links_set.remove(url)
+
 
 
     async def wait_to_avoid_rate_limiting(self):
