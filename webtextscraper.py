@@ -84,11 +84,11 @@ class WebTextScraper:
     async def scrape_iterative(self, url):
         self.links_set.add(url)
         while self.links_set:
-            self.links_set.remove(url)
             for new_url in self.links_set:
                 url = new_url
                 break
 
+            self.links_set.remove(url)
             await self.wait_to_avoid_rate_limiting()
             self.add_url_as_explored(url)
             print(f'INFO: fetched urls for {self.organization_name}: {len(self.explored_urls) // 2}. Current url: {url}')
