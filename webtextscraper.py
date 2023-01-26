@@ -9,7 +9,7 @@ from time import time
 
 class WebTextScraper:
 
-    def __init__(self, base_url, save_nr, organization_name, aio_session=None, min_seconds_between_requests=2.6):
+    def __init__(self, base_url, save_nr, organization_name, aio_session=None, min_seconds_between_requests=3):
         self.base_url = base_url
         self.save_nr = save_nr
         self.organization_name = organization_name
@@ -22,13 +22,17 @@ class WebTextScraper:
         self.previous_request_time = time()
         self.aio_session = aio_session
         self.failed = False
+        self.links_set = set()
 
     def __repr__(self):
         return f'{self.save_nr}{self.organization_name}'
 
-    async def start(self):
+    async def start(self, recursive=True):
         try:
-            await self.scrape(self.base_url)
+            if recursive:
+                await self.scrape(self.base_url)
+            else:
+                await self.scrape_iterative(self.base_url)
         except ssl.SSLCertVerificationError as e:
             print(e)
             self.failed = True
@@ -75,6 +79,28 @@ class WebTextScraper:
         for link in links:
             if link not in self.explored_urls:
                 await self.scrape(link)
+
+    async def scrape_iterative(self, url):
+        self.links_set.add(url)
+        while self.links_set:
+            for new_url in self.links_set:
+                url = new_url
+                break
+
+            await self.wait_to_avoid_rate_limiting()
+            self.add_url_as_explored(url)
+            print(f'INFO: fetched urls for {self.organization_name}: {len(self.explored_urls) // 2}. Current url: {url}')
+            soup = await try_to_get_soup_parser_async(url, self.aio_session)
+            if soup is None:
+                continue
+            text = get_all_text_from_soup(soup)
+            self.add_strings_to_save_dicts(url, text)
+            links = self.get_all_href_links(soup, self.base_url)
+            for link in links:
+                if link not in self.explored_urls:
+                    self.links_set.add(link)
+            self.links_set.remove(url)
+
 
     async def wait_to_avoid_rate_limiting(self):
         wait_time = self.get_wait_time_seconds(time())
