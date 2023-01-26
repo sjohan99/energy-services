@@ -30,10 +30,11 @@ async def gather_with_concurrency(n, *coros):
 # create tasks
 async def main(scrapers):
     # From excel to objects
-    connector = aiohttp.TCPConnector(force_close=True, limit=50)
+    connector = aiohttp.TCPConnector(force_close=True, limit=50, limit_per_host=3)
     aio_session = aiohttp.ClientSession(
         connector=connector,
         raise_for_status=True,
+        trust_env=True,
         headers={
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.1 Safari/603.1.30'}
     )
@@ -56,6 +57,6 @@ if __name__ == '__main__':
     n = 25
     scraper_batches = [scrapers[i * n:(i + 1) * n] for i in range((len(scrapers) + n - 1) // n)]
 
-    for batch in scraper_batches:
+    for batch in scraper_batches[1:3]:
         scrapers, session = asyncio.run(main(batch))
         session.close()
