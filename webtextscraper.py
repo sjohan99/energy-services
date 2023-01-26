@@ -9,7 +9,7 @@ from time import time
 
 class WebTextScraper:
 
-    def __init__(self, base_url, save_nr, organization_name, aio_session=None, min_seconds_between_requests=3):
+    def __init__(self, base_url, save_nr, organization_name, aio_session=None, min_seconds_between_requests=4, limiter=None):
         self.base_url = base_url
         self.save_nr = save_nr
         self.organization_name = organization_name
@@ -23,6 +23,7 @@ class WebTextScraper:
         self.aio_session = aio_session
         self.failed = False
         self.links_set = set()
+        self.limiter = limiter
 
     def __repr__(self):
         return f'{self.save_nr}{self.organization_name}'
@@ -178,6 +179,10 @@ class WebTextScraper:
                 link = raw_link
             if link:
                 link = self.clean_url(link)
-                links.add(link)
+                if self.limiter:
+                    if self.limiter in link:
+                        links.add(link)
+                else:
+                    links.add(link)
 
         return links
